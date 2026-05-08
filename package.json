@@ -13,7 +13,7 @@
     "desktop": "electron .",
     "pack": "electron-builder --dir",
     "dist": "electron-builder --win nsis portable",
-    "dist:mac": "electron-builder --mac dmg zip"
+    "dist:mac": "electron-builder --mac dmg zip --publish never"
   },
   "engines": {
     "node": ">=20"

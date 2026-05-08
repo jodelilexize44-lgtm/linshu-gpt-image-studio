@@ -106,7 +106,7 @@ If packaging fails with `Access is denied` under `release\win-unpacked`, close o
 
 ## macOS Build Notes
 
-- `package.json` contains `dist:mac`.
+- `package.json` contains `dist:mac` with `--publish never` so GitHub Actions uploads artifacts instead of trying to publish a GitHub Release.
 - `package.json` contains `build.mac.target = ["dmg", "zip"]`.
 - `package.json` contains `build.mac.identity = null` for unsigned CI builds.
 - `.github/workflows/build-macos.yml` can produce unsigned macOS artifacts on GitHub Actions.

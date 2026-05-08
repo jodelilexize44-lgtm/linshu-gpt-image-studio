@@ -52,7 +52,7 @@ release/林叔的GPT绘图平台-0.1.0-arm64.zip
 工作流默认关闭证书自动发现：
 
 ```text
-CSC_IDENTITY_AUTO_DISCOVERY=false
+          CSC_IDENTITY_AUTO_DISCOVERY=false
 ```
 
 所以产物是未签名版本。
@@ -79,7 +79,7 @@ xattr -dr com.apple.quarantine "/Applications/林叔的GPT绘图平台.app"
 ```json
 {
   "scripts": {
-    "dist:mac": "electron-builder --mac dmg zip"
+    "dist:mac": "electron-builder --mac dmg zip --publish never"
   },
   "build": {
     "mac": {
