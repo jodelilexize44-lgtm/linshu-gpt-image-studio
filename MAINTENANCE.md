@@ -108,5 +108,6 @@ If packaging fails with `Access is denied` under `release\win-unpacked`, close o
 
 - `package.json` contains `dist:mac`.
 - `package.json` contains `build.mac.target = ["dmg", "zip"]`.
+- `package.json` contains `build.mac.identity = null` for unsigned CI builds.
 - `.github/workflows/build-macos.yml` can produce unsigned macOS artifacts on GitHub Actions.
 - Unsigned macOS builds may be blocked by Gatekeeper. Formal distribution needs Apple Developer ID signing and notarization.

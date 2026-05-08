@@ -83,6 +83,7 @@ xattr -dr com.apple.quarantine "/Applications/林叔的GPT绘图平台.app"
   },
   "build": {
     "mac": {
+      "identity": null,
       "target": ["dmg", "zip"],
       "category": "public.app-category.graphics-design"
     }

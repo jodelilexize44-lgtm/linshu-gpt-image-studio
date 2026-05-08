@@ -54,6 +54,7 @@
       "artifactName": "${productName}-Portable-${version}-${arch}.${ext}"
     },
     "mac": {
+      "identity": null,
       "target": [
         "dmg",
         "zip"
