@@ -1,0 +1,237 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>林叔的GPT绘图平台</title>
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <header class="topbar">
+      <div class="brand">
+        <img class="brand-mark" src="/linshu-logo.jpg" alt="林叔的GPT绘图平台图标" />
+        <div>
+          <h1>林叔的GPT绘图平台</h1>
+          <p>APIMart 图像生成工作台</p>
+        </div>
+      </div>
+      <div class="top-actions">
+        <button class="ghost-button" id="historyButton" type="button">历史记录</button>
+        <button class="outline-button" id="settingsButton" type="button">API Key</button>
+      </div>
+    </header>
+
+    <main class="workspace">
+      <section class="panel creator">
+        <div class="panel-head">
+          <div>
+            <p class="eyebrow">CREATE</p>
+            <h2>创建图片</h2>
+          </div>
+          <span class="model-badge">GPT-image-2</span>
+        </div>
+
+        <form id="generationForm">
+          <label class="field prompt-field">
+            <span>图片描述</span>
+            <textarea id="prompt" name="prompt" rows="7" placeholder="例如：一只橙色像素机器人站在雨夜霓虹街道中央，电影感灯光，细节丰富，高级质感"></textarea>
+            <small>Ctrl+Enter 快速生成。把画面、风格、光线、镜头和材质写清楚，效果会更稳定。</small>
+          </label>
+
+          <label class="toggle-row">
+            <input id="batchMode" type="checkbox" />
+            <span>批量生成模式</span>
+          </label>
+
+          <div class="control-grid size-resolution-grid">
+            <label class="field">
+              <span>图片比例</span>
+              <select id="size" name="size"></select>
+              <small id="pixelHint">实际像素会按分辨率自动映射。</small>
+            </label>
+
+            <label class="field">
+              <span>分辨率</span>
+              <select id="resolution" name="resolution"></select>
+              <small id="resolutionHint">1K 日常够用，2K 适合海报，4K 仅部分比例可用。</small>
+            </label>
+          </div>
+
+          <div class="field">
+            <span>出图模型</span>
+            <div class="model-tabs" role="radiogroup" aria-label="出图模型">
+              <button class="model-tab active" type="button" data-model="gpt-image-2">
+                <strong>GPT-Image-2</strong>
+                <em>标准通道</em>
+              </button>
+              <button class="model-tab" type="button" data-model="gpt-image-2-official">
+                <strong>GPT-Image-2 Official</strong>
+                <em>官方通道</em>
+              </button>
+            </div>
+            <input id="model" name="model" type="hidden" value="gpt-image-2" />
+            <small id="modelHint">普通通道支持图生图，单次生成 1 张，可开启官方渠道兜底。</small>
+          </div>
+
+          <div class="advanced" id="officialOptions">
+            <div class="control-grid">
+              <label class="field">
+                <span>生成张数</span>
+                <input id="n" name="n" type="number" min="1" max="4" value="1" />
+              </label>
+              <label class="field">
+                <span>质量</span>
+                <select id="quality" name="quality">
+                  <option value="auto">auto 自动</option>
+                  <option value="low">low 快速省钱</option>
+                  <option value="medium">medium 平衡</option>
+                  <option value="high">high 最高精度</option>
+                </select>
+              </label>
+            </div>
+            <div class="control-grid">
+              <label class="field">
+                <span>背景</span>
+                <select id="background" name="background">
+                  <option value="auto">auto 自动</option>
+                  <option value="opaque">opaque 不透明</option>
+                  <option value="transparent">transparent 透明</option>
+                </select>
+              </label>
+              <label class="field">
+                <span>审核强度</span>
+                <select id="moderation" name="moderation">
+                  <option value="auto">auto 默认</option>
+                  <option value="low">low 宽松</option>
+                </select>
+              </label>
+            </div>
+            <div class="control-grid">
+              <label class="field">
+                <span>输出格式</span>
+                <select id="outputFormat" name="output_format">
+                  <option value="png">png</option>
+                  <option value="jpeg">jpeg</option>
+                  <option value="webp">webp</option>
+                </select>
+              </label>
+              <label class="field">
+                <span>压缩强度</span>
+                <input id="outputCompression" name="output_compression" type="number" min="0" max="100" value="90" />
+              </label>
+            </div>
+            <label class="field">
+              <span>Mask URL（可选）</span>
+              <input id="maskUrl" name="mask_url" type="url" placeholder="用于局部重绘，需搭配首张参考图" />
+            </label>
+          </div>
+
+          <label class="toggle-row" id="fallbackRow">
+            <input id="officialFallback" name="official_fallback" type="checkbox" value="true" />
+            <span>普通通道失败时使用官方渠道兜底</span>
+          </label>
+
+          <div class="field">
+            <div class="inline-title">
+              <span>参考图（可选）</span>
+              <b id="referenceCount">0/16</b>
+            </div>
+            <div class="upload-zone" id="uploadZone">
+              <input id="references" name="references" type="file" accept="image/jpeg,image/png,image/webp,image/gif" multiple hidden />
+              <button class="upload-button" type="button" id="uploadButton">
+                <span>+</span>
+                添加参考图
+              </button>
+              <div class="reference-grid" id="referenceGrid"></div>
+            </div>
+            <small>本地图片会先上传到 APIMart 获取 URL；单张最大 20MB，最多 16 张。</small>
+          </div>
+
+          <label class="field">
+            <span>参考图 URL（可选，每行一个）</span>
+            <textarea id="imageUrls" name="image_urls" rows="3" placeholder="https://example.com/photo.png"></textarea>
+          </label>
+
+          <label class="field api-field">
+            <span>API Key</span>
+            <div class="key-row">
+              <input id="apiKeyInline" type="password" placeholder="sk-..." autocomplete="off" />
+              <button class="text-button" type="button" id="saveInlineKey">保存</button>
+            </div>
+            <small>密钥只保存在浏览器本地；请求由本机代理转发到 APIMart。</small>
+          </label>
+
+          <button class="generate-button" id="generateButton" type="submit">
+            <span>生成图片</span>
+          </button>
+        </form>
+      </section>
+
+      <section class="panel result-panel">
+        <div class="panel-head result-head">
+          <div>
+            <p class="eyebrow">OUTPUT</p>
+            <h2>生成结果</h2>
+          </div>
+          <div class="result-meta">
+            <span>异步任务</span>
+            <span>自动轮询</span>
+          </div>
+        </div>
+
+        <div class="status-card" id="statusCard">
+          <div class="empty-state" id="emptyState">
+            <img src="/linshu-logo.jpg" alt="" />
+            <h3>输入描述，开始创作第一张图</h3>
+            <p>支持文字生成、参考图生成、最多 16 张参考图和异步任务轮询。</p>
+          </div>
+          <div class="running-state hidden" id="runningState">
+            <div class="loader"></div>
+            <h3 id="taskTitle">任务已提交</h3>
+            <p id="taskDetail">等待 APIMart 开始处理。</p>
+            <div class="progress">
+              <span id="progressBar"></span>
+            </div>
+          </div>
+          <div class="image-grid hidden" id="imageGrid"></div>
+        </div>
+      </section>
+    </main>
+
+    <aside class="drawer" id="historyDrawer" aria-hidden="true">
+      <div class="drawer-card">
+        <div class="drawer-head">
+          <h2>历史记录</h2>
+          <button class="icon-button" type="button" id="closeHistory">×</button>
+        </div>
+        <div id="historyList" class="history-list"></div>
+        <button class="ghost-button danger" id="clearHistory" type="button">清空历史</button>
+      </div>
+    </aside>
+
+    <dialog id="settingsDialog">
+      <form method="dialog" class="settings-card">
+        <h2>接口配置</h2>
+        <label class="field">
+          <span>Provider</span>
+          <input value="APIMart" disabled />
+        </label>
+        <label class="field">
+          <span>API Base</span>
+          <input id="apiBase" type="url" value="https://api.apimart.ai" />
+        </label>
+        <label class="field">
+          <span>API Key</span>
+          <input id="apiKey" type="password" placeholder="Bearer Token" autocomplete="off" />
+        </label>
+        <div class="dialog-actions">
+          <button class="ghost-button" value="cancel">取消</button>
+          <button class="outline-button" id="saveSettings" value="default">保存配置</button>
+        </div>
+      </form>
+    </dialog>
+
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+    <script src="/app.js" type="module"></script>
+  </body>
+</html>

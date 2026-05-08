@@ -1,0 +1,64 @@
+{
+  "name": "linshu-gpt-image-studio",
+  "version": "0.1.0",
+  "description": "APIMart GPT-image-2 desktop image generation studio.",
+  "author": "Linshu",
+  "private": true,
+  "type": "module",
+  "main": "electron-main.cjs",
+  "productName": "林叔的GPT绘图平台",
+  "scripts": {
+    "start": "node server.mjs",
+    "dev": "node server.mjs",
+    "desktop": "electron .",
+    "pack": "electron-builder --dir",
+    "dist": "electron-builder --win nsis portable",
+    "dist:mac": "electron-builder --mac dmg zip"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "devDependencies": {
+    "electron": "latest",
+    "electron-builder": "latest"
+  },
+  "build": {
+    "appId": "com.linshu.gpt-image-studio",
+    "productName": "林叔的GPT绘图平台",
+    "directories": {
+      "output": "release"
+    },
+    "files": [
+      "electron-main.cjs",
+      "server.mjs",
+      "package.json",
+      "public/**/*"
+    ],
+    "asar": true,
+    "win": {
+      "signAndEditExecutable": false,
+      "target": [
+        "nsis",
+        "portable"
+      ]
+    },
+    "nsis": {
+      "artifactName": "${productName}-Setup-${version}-${arch}.${ext}",
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "林叔的GPT绘图平台"
+    },
+    "portable": {
+      "artifactName": "${productName}-Portable-${version}-${arch}.${ext}"
+    },
+    "mac": {
+      "target": [
+        "dmg",
+        "zip"
+      ],
+      "category": "public.app-category.graphics-design"
+    }
+  }
+}
