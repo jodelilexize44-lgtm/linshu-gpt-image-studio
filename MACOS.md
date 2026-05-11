@@ -39,6 +39,13 @@ release/林叔的GPT绘图平台-0.1.0-arm64.zip
 
 不同 Mac 或 Electron Builder 版本可能会生成 `x64`、`arm64` 或 universal 文件名，以实际 `release` 目录为准。
 
+也可以分别构建指定芯片版本：
+
+```bash
+npm run dist:mac:arm64
+npm run dist:mac:x64
+```
+
 ## 用 GitHub Actions 构建
 
 1. 把项目推到 GitHub。
@@ -46,8 +53,8 @@ release/林叔的GPT绘图平台-0.1.0-arm64.zip
 3. 选择 `build-macos`。
 4. 点击 `Run workflow`。
 5. 构建完成后下载 artifacts：
-   - `macos-dmg`
-   - `macos-zip`
+   - Apple 芯片 Mac：`macos-arm64-dmg` 或 `macos-arm64-zip`
+   - Intel 芯片 Mac：`macos-x64-dmg` 或 `macos-x64-zip`
 
 工作流默认关闭证书自动发现：
 
@@ -79,7 +86,9 @@ xattr -dr com.apple.quarantine "/Applications/林叔的GPT绘图平台.app"
 ```json
 {
   "scripts": {
-    "dist:mac": "electron-builder --mac dmg zip --publish never"
+    "dist:mac": "electron-builder --mac dmg zip --publish never",
+    "dist:mac:arm64": "electron-builder --mac dmg zip --arm64 --publish never",
+    "dist:mac:x64": "electron-builder --mac dmg zip --x64 --publish never"
   },
   "build": {
     "mac": {

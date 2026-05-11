@@ -8,7 +8,16 @@ on:
 
 jobs:
   build:
-    runs-on: macos-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - arch: arm64
+            runner: macos-latest
+          - arch: x64
+            runner: macos-13
+
+    runs-on: ${{ matrix.runner }}
 
     steps:
       - name: Checkout
@@ -26,18 +35,18 @@ jobs:
       - name: Build macOS packages
         env:
           CSC_IDENTITY_AUTO_DISCOVERY: "false"
-        run: npm run dist:mac
+        run: npm run dist:mac:${{ matrix.arch }}
 
       - name: Upload DMG
         uses: actions/upload-artifact@v4
         with:
-          name: macos-dmg
-          path: release/*.dmg
+          name: macos-${{ matrix.arch }}-dmg
+          path: release/*${{ matrix.arch }}*.dmg
           if-no-files-found: error
 
       - name: Upload ZIP
         uses: actions/upload-artifact@v4
         with:
-          name: macos-zip
-          path: release/*.zip
+          name: macos-${{ matrix.arch }}-zip
+          path: release/*${{ matrix.arch }}*.zip
           if-no-files-found: error
